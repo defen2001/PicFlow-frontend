@@ -86,6 +86,7 @@ const originMenuItems = [
     key: '/admin/pictureManage',
     label: '图片管理',
     title: '图片管理',
+    requiredRole: 'admin',
   },
   {
     key: '/about',
