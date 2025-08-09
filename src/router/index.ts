@@ -7,6 +7,7 @@ import AddPictureView from '@/views/AddPictureView.vue'
 import PictureManageView from '@/views/admin/PictureManageView.vue'
 import PictureDetailView from '@/views/PictureDetailView.vue'
 import AboutView from '@/views/AboutView.vue'
+import AddPictureBatchView from '@/views/AddPictureBatchView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -35,6 +36,11 @@ const router = createRouter({
       path: '/add_picture',
       name: '创建图片',
       component: AddPictureView,
+    },
+    {
+      path: '/add_picture/batch',
+      name: '批量创建图片',
+      component: AddPictureBatchView,
     },
     {
       path: '/picture/:id',
