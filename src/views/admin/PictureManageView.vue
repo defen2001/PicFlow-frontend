@@ -111,9 +111,12 @@
 <script setup lang="ts">
 import { computed, onMounted, reactive, ref } from 'vue'
 import { message } from 'ant-design-vue'
-import { deleteUserUsingPost } from '@/api/userController.ts'
 import dayjs from 'dayjs'
-import { doPictureReviewUsingPost, listPictureByPageUsingPost } from '@/api/pictureController.ts'
+import {
+  deletePictureUsingPost,
+  doPictureReviewUsingPost,
+  listPictureByPageUsingPost
+} from '@/api/pictureController.ts'
 import {
   PIC_REVIEW_STATUS_ENUM,
   PIC_REVIEW_STATUS_MAP,
@@ -236,7 +239,7 @@ const doDelete = async (id: string) => {
   if (!id) {
     return
   }
-  const res = await deleteUserUsingPost({ id })
+  const res = await deletePictureUsingPost({ id })
   if (res.data.code === 0) {
     message.success('删除成功')
     // 刷新数据
