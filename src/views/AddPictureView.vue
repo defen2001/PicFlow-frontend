@@ -3,15 +3,18 @@
     <h2 style="margin-bottom: 16px">
       {{route.query?.id ? '修改图片' : '创建图片'}}
     </h2>
+    <a-typography-paragraph v-if="spaceId" type="secondary">
+      保存至空间：<a :href="`/space/${spaceId}`" target="_blank">{{ spaceId }}</a>
+    </a-typography-paragraph>
     <!-- 选择上传方式 -->
     <a-tabs v-model:active-key="uploadType">
       <a-tab-pane key="file" tab="文件上传">
         <!-- 图片上传插件 -->
-        <PictureUpload :picture="picture" :onSuccess="onSuccess"/>
+        <PictureUpload :picture="picture" :spaceId="spaceId" :onSuccess="onSuccess"/>
       </a-tab-pane>
       <a-tab-pane key="url" tab="URL 上传">
         <!-- Url 图片信息表单 -->
-        <UrlPictureUpload :picture="picture" :onSuccess="onSuccess"/>
+        <UrlPictureUpload :picture="picture" :spaceId="spaceId" :onSuccess="onSuccess"/>
       </a-tab-pane>
     </a-tabs>
     <!-- 图片信息表单 -->
@@ -46,14 +49,14 @@
         />
       </a-form-item>
       <a-form-item>
-        <a-button type="primary" html-type="submit" style="width: 100%">创建</a-button>
+        <a-button type="primary" html-type="submit" style="width: 100%">提交</a-button>
       </a-form-item>
     </a-form>
   </div>
 </template>
 <script setup lang="ts">
 import PictureUpload from '@/components/PictureUpload.vue'
-import { onMounted, reactive, ref } from 'vue'
+import { computed, onMounted, reactive, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import {
   editPictureUsingPost,
@@ -71,9 +74,16 @@ const onSuccess = (newPicture: API.PictureVo) => {
 
 const pictureForm = reactive<API.PictureEditRequest>({})
 
+const route = useRoute()
 const router = useRouter()
 // 上传类型
 const uploadType = ref<'file' | 'url'>('file')
+
+// 空间 id
+const spaceId = computed(() => {
+  return route.query?.spaceId
+})
+
 
 /**
  * 提交表单
@@ -86,16 +96,17 @@ const handleSubmit = async (values: any) => {
   }
   const res = await editPictureUsingPost({
     id: pictureId,
+    spaceId: spaceId.value,
     ...values,
   })
   if (res.data.code === 0 && res.data.data) {
-    message.success('创建成功')
+    message.success('提交成功')
     // 跳转到图片详情页
     router.push({
       path: `/picture/${pictureId}`,
     })
   } else {
-    message.error('创建失败，' + res.data.message)
+    message.error('提交失败，' + res.data.message)
   }
 }
 
@@ -127,8 +138,6 @@ const getTagCategoryOptions = async () => {
 onMounted(() => {
   getTagCategoryOptions()
 })
-
-const route = useRoute()
 
 // 获取老数据
 const getOldPicture = async () => {

@@ -34,6 +34,12 @@
                 </ASpace>
                 <template #overlay>
                   <a-menu>
+                    <a-menu-item>
+                      <router-link to="/my_space">
+                        <UserOutlined />
+                        我的空间
+                      </router-link>
+                    </a-menu-item>
                     <a-menu-item @click="doLogout">
                       <LogoutOutlined />
                       退出登录
@@ -57,6 +63,7 @@ import { useRouter } from 'vue-router'
 import { useLoginUserStore } from '@/stores/useLoginUserStore.ts'
 import { message } from 'ant-design-vue'
 import { logoutUsingPost } from '@/api/userController.ts'
+import { UserOutlined, LogoutOutlined } from '@ant-design/icons-vue'
 
 const router = useRouter()
 
@@ -89,10 +96,9 @@ const originMenuItems = [
     requiredRole: 'admin',
   },
   {
-    key: '/about',
-    label: '联系我们',
-    title: '联系我们',
-    // 不配置权限则默认显示
+    key: '/admin/spaceManage',
+    label: '空间管理',
+    title: '空间管理',
   },
 ]
 
@@ -192,6 +198,7 @@ router.afterEach((to, from) => {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
 .user-name {
   max-width: 100px;
   overflow: hidden;
