@@ -99,6 +99,7 @@ const originMenuItems = [
     key: '/admin/spaceManage',
     label: '空间管理',
     title: '空间管理',
+    requiredRole: 'admin',
   },
 ]
 
