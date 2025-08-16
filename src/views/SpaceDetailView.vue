@@ -34,7 +34,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import { onMounted, reactive, ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import { message } from 'ant-design-vue'
 import { formatSize } from '@/utills'
 import PictureList from '@/components/PictureList.vue'
