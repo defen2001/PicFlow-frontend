@@ -4,9 +4,8 @@
     <a-flex justify="space-between">
       <h2>{{ space.spaceName }}（私有空间）</h2>
       <a-space size="middle">
-        <a-button type="primary" :href="`/add_picture?spaceId=${id}`">
-          + 创建图片
-        </a-button>
+        <a-button type="primary" :href="`/add_picture?spaceId=${id}`"> + 创建图片 </a-button>
+        <a-button :icon="h(EditOutlined)" @click="doBatchEdit"> 批量编辑</a-button>
         <a-tooltip
           :title="`占用空间 ${formatSize(space.totalSize)} / ${formatSize(space.maxSize)}`"
         >
@@ -19,7 +18,7 @@
       </a-space>
     </a-flex>
     <!-- 搜索表单 -->
-    <PictureSearchForm :onSearch="onSearch"/>
+    <PictureSearchForm :onSearch="onSearch" />
     <div style="margin-bottom: 16px" />
     <!-- 图片列表 -->
     <PictureList :dataList="dataList" :loading="loading" :showOp="true" :onReload="fetchData" />
@@ -31,16 +30,24 @@
       :show-total="() => `图片总数 ${total} / ${space.maxCount}`"
       @change="onPageChange"
     />
+    <PictureEditBatchModal
+      ref="pictureEditBatchModal"
+      :spaceId="id"
+      :pictureList="dataList"
+      :onSuccess="onBatchEditPictureSuccess"
+    />
   </div>
 </template>
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { h, onMounted, ref } from 'vue'
 import { message } from 'ant-design-vue'
 import { formatSize } from '@/utills'
 import PictureList from '@/components/PictureList.vue'
 import { getSpaceVoByIdUsingGet } from '@/api/spaceController.ts'
 import { listPictureVoByPageUsingPost } from '@/api/pictureController.ts'
 import PictureSearchForm from '@/components/PictureSearchForm.vue'
+import PictureEditBatchModal from '@/components/PictureEditBatchModal.vue'
+import { EditOutlined } from '@ant-design/icons-vue'
 
 const props = defineProps<{
   id: string | number
@@ -68,7 +75,7 @@ onMounted(() => {
 })
 
 // 数据
-const dataList = ref([])
+const dataList = ref<API.PictureVo[]>([])
 const total = ref(0)
 const loading = ref(true)
 
@@ -118,6 +125,22 @@ const onSearch = (newSearchParams: API.PictureQueryRequest) => {
     current: 1,
   }
   fetchData()
+}
+
+// --- 批量编辑图片 ----
+// 分享弹窗引用
+const pictureEditBatchModal = ref()
+
+// 批量编辑成功后，刷新数据
+const onBatchEditPictureSuccess = () => {
+  fetchData()
+}
+
+// 打开批量编辑弹窗
+const doBatchEdit = () => {
+  if (pictureEditBatchModal.value) {
+    pictureEditBatchModal.value.openModal()
+  }
 }
 </script>
 <style scoped>
