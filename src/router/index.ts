@@ -12,6 +12,7 @@ import AddSpaceView from '@/views/AddSpaceView.vue'
 import MySpaceView from '@/views/MySpaceView.vue'
 import SpaceDetailView from '@/views/SpaceDetailView.vue'
 import SearchPictureView from '@/views/SearchPictureView.vue'
+import SpaceAnalyzeView from '@/views/SpaceAnalyzeView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -63,6 +64,11 @@ const router = createRouter({
       component: SpaceDetailView,
       meta: { menuKey: '/my_space' }, // 关联到菜单key
       props: true,
+    },
+    {
+      path: '/space_analyze',
+      name: '空间分析',
+      component: SpaceAnalyzeView,
     },
     {
       path: '/admin/pictureManage',

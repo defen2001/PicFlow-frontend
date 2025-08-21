@@ -5,6 +5,14 @@
       <h2>{{ space.spaceName }}（私有空间）</h2>
       <a-space size="middle">
         <a-button type="primary" :href="`/add_picture?spaceId=${id}`"> + 创建图片 </a-button>
+        <a-button
+          type="primary"
+          ghost
+          :icon="h(BarChartOutlined)"
+          :href="`/space_analyze?spaceId=${id}`"
+        >
+          空间分析
+        </a-button>
         <a-button :icon="h(EditOutlined)" @click="doBatchEdit"> 批量编辑</a-button>
         <a-tooltip
           :title="`占用空间 ${formatSize(space.totalSize)} / ${formatSize(space.maxSize)}`"
@@ -47,7 +55,7 @@ import { getSpaceVoByIdUsingGet } from '@/api/spaceController.ts'
 import { listPictureVoByPageUsingPost } from '@/api/pictureController.ts'
 import PictureSearchForm from '@/components/PictureSearchForm.vue'
 import PictureEditBatchModal from '@/components/PictureEditBatchModal.vue'
-import { EditOutlined } from '@ant-design/icons-vue'
+import { BarChartOutlined, EditOutlined } from '@ant-design/icons-vue'
 
 const props = defineProps<{
   id: string | number
