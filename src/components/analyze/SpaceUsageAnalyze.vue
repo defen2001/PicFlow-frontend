@@ -39,7 +39,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 // 图表数据
 const data = ref<API.SpaceUsageAnalyzeResponse>({})
-const loading = ref(true)
+const loading = ref(false)
 
 /**
  * 加载数据

@@ -26,8 +26,8 @@ const props = withDefaults(defineProps<Props>(), {
 })
 
 // 图表数据
-const dataList = ref<API.SpaceCategoryAnalyzeResponse[]>([])
-const loading = ref(true)
+const dataList = ref<API.SpaceTagAnalyzeResponse[]>([])
+const loading = ref(false)
 
 /**
  * 加载数据
