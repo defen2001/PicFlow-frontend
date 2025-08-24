@@ -1,7 +1,7 @@
 <template>
   <div id="addSpaceView">
     <h2 style="margin-bottom: 16px">
-      {{ route.query?.id ? '修改空间' : '创建空间' }}
+      {{ route.query?.id ? '修改' : '创建' }}{{ SPACE_TYPE_MAP[spaceType] }}
     </h2>
     <!-- 空间信息表单 -->
     <a-form layout="vertical" :model="formData" @finish="handleSubmit">
@@ -26,8 +26,7 @@
     <!--  空间级别介绍  -->
     <a-card title="空间级别介绍">
       <a-typography-paragraph>
-        * 目前仅支持开通普通版，如需升级空间，请联系
-        <a href="https://codefather.cn" target="_blank">程序员鱼皮</a>。
+        * 目前仅支持开通普通版，如需升级空间，请联系管理员
       </a-typography-paragraph>
       <a-typography-paragraph v-for="spaceLevel in spaceLevelList">
         {{ spaceLevel.text }}： 大小 {{ formatSize(spaceLevel.maxSize) }}， 数量
@@ -37,8 +36,13 @@
   </div>
 </template>
 <script setup lang="ts">
-import { onMounted, reactive, ref } from 'vue'
-import { SPACE_LEVEL_ENUM, SPACE_LEVEL_OPTIONS } from '@/constans/space.ts'
+import { computed, onMounted, reactive, ref } from 'vue'
+import {
+  SPACE_LEVEL_ENUM,
+  SPACE_LEVEL_OPTIONS,
+  SPACE_TYPE_ENUM,
+  SPACE_TYPE_MAP,
+} from '@/constans/space.ts'
 import { formatSize } from '@/utills'
 import {
   addSpaceUsingPost,
@@ -74,6 +78,7 @@ const handleSubmit = async (values: any) => {
   } else {
     // 创建
     res = await addSpaceUsingPost({
+      spaceType: spaceType.value,
       ...formData,
     })
   }
@@ -127,6 +132,14 @@ const getOldSpace = async () => {
 // 页面加载时，请求老数据
 onMounted(() => {
   getOldSpace()
+})
+
+// 空间类别
+const spaceType = computed(() => {
+  if (route.query?.type) {
+    return Number(route.query.type)
+  }
+  return SPACE_TYPE_ENUM.PRIVATE
 })
 </script>
 <style>

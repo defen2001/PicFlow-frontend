@@ -4,10 +4,7 @@
       <!-- 图片展示区 -->
       <a-col :sm="24" :md="16" :xl="18">
         <a-card title="图片预览">
-          <a-image
-            style="max-height: 600px; object-fit: contain"
-            :src="picture.url"
-          />
+          <a-image style="max-height: 600px; object-fit: contain" :src="picture.url" />
         </a-card>
       </a-col>
       <!-- 图片信息区 -->
@@ -70,7 +67,7 @@
                 <EditOutlined />
               </template>
             </a-button>
-            <a-button v-if="canEdit" danger @click="doDelete">
+            <a-button v-if="canDelete" danger @click="doDelete">
               删除
               <template #icon>
                 <DeleteOutlined />
@@ -80,7 +77,7 @@
         </a-card>
       </a-col>
     </a-row>
-    <ShareModal ref="shareModalRef"  :link="shareLink"/>
+    <ShareModal ref="shareModalRef" :link="shareLink" />
   </div>
 </template>
 <script setup lang="ts">
@@ -89,13 +86,30 @@ import { deletePictureUsingPost, getPictureVoByIdUsingGet } from '@/api/pictureC
 import { message } from 'ant-design-vue'
 import { downloadImage, formatSize } from '@/utills'
 import { useLoginUserStore } from '@/stores/useLoginUserStore.ts'
-import { DeleteOutlined, EditOutlined, DownloadOutlined, ShareAltOutlined } from '@ant-design/icons-vue'
+import {
+  DeleteOutlined,
+  EditOutlined,
+  DownloadOutlined,
+  ShareAltOutlined,
+} from '@ant-design/icons-vue'
 import router from '@/router'
 import ShareModal from '@/components/ShareModal.vue'
+import { SPACE_PERMISSION_ENUM } from '@/constans/space.ts'
 
 const props = defineProps<{
   id: string | number
 }>()
+
+// 通用权限检查函数
+function createPermissionChecker(permission: string) {
+  return computed(() => {
+    return (picture.value.permissionList ?? []).includes(permission)
+  })
+}
+
+// 定义权限检查
+const canEdit = createPermissionChecker(SPACE_PERMISSION_ENUM.PICTURE_EDIT)
+const canDelete = createPermissionChecker(SPACE_PERMISSION_ENUM.PICTURE_DELETE)
 
 const picture = ref<API.PictureVo>({})
 
@@ -117,16 +131,16 @@ const fetchPictureDetail = async () => {
 
 const loginUserStore = useLoginUserStore()
 // 是否具有编辑权限
-const canEdit = computed(() => {
-  const loginUser = loginUserStore.loginUser;
-  // 未登录不可编辑
-  if (!loginUser.id) {
-    return false
-  }
-  // 仅本人或管理员可编辑
-  const user = picture.value.user || {}
-  return loginUser.id === user.id || loginUser.userRole === 'admin'
-})
+// const canEdit = computed(() => {
+//   const loginUser = loginUserStore.loginUser;
+//   // 未登录不可编辑
+//   if (!loginUser.id) {
+//     return false
+//   }
+//   // 仅本人或管理员可编辑
+//   const user = picture.value.user || {}
+//   return loginUser.id === user.id || loginUser.userRole === 'admin'
+// })
 
 // 编辑
 const doEdit = () => {
@@ -134,8 +148,8 @@ const doEdit = () => {
     path: '/add_picture',
     query: {
       id: picture.value.id,
-      spaceId: picture.value.spaceId
-    }
+      spaceId: picture.value.spaceId,
+    },
   })
 }
 // 删除
