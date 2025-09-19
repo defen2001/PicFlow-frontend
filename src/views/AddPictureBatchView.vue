@@ -18,6 +18,25 @@
       <a-form-item label="名称前缀" name="namePrefix">
         <a-input v-model:value="formData.namePrefix" placeholder="请输入名称前缀，会自动补充序号" />
       </a-form-item>
+      <a-form-item name="category" label="分类">
+        <a-auto-complete
+          v-model:value="formData.category"
+          placeholder="请输入分类"
+          :options="categoryOptions"
+          allow-clear
+          class="custom-input"
+        />
+      </a-form-item>
+      <a-form-item name="tags" label="标签">
+        <a-select
+          v-model:value="formData.tags"
+          mode="tags"
+          placeholder="请输入标签"
+          :options="tagOptions"
+          allow-clear
+          class="custom-select"
+        />
+      </a-form-item>
       <a-form-item>
         <a-button type="primary" html-type="submit" style="width: 100%" :loading="loading">
           执行任务
@@ -27,9 +46,12 @@
   </div>
 </template>
 <script setup lang="ts">
-import { reactive, ref } from 'vue'
+import { onMounted, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { uploadPictureByBatchUsingPost } from '@/api/pictureController.ts'
+import {
+  listPictureTagCategoryUsingGet,
+  uploadPictureByBatchUsingPost
+} from '@/api/pictureController.ts'
 import { message } from 'ant-design-vue'
 
 const formData = reactive<API.PictureUploadByBatchRequest>({
@@ -57,6 +79,37 @@ const handleSubmit = async () => {
   }
   loading.value = false
 }
+
+const categoryOptions = ref<string[]>([])
+const tagOptions = ref<{ value: string; label: string }[]>([])
+
+/**
+ * 获取标签和分类选项
+ */
+const getTagCategoryOptions = async () => {
+  const res = await listPictureTagCategoryUsingGet()
+  if (res.data.code === 0 && res.data.data) {
+    tagOptions.value = (res.data.data.tagList?? []).map((data: string) => {
+      return {
+        value: data,
+        label: data,
+      }
+    })
+    categoryOptions.value = (res.data.data.categoryList?? []).map((data: string) => {
+      return {
+        value: data,
+        label: data,
+      }
+    })
+  } else {
+    // message.error('获取标签分类列表失败，' + res.data.message)
+  }
+}
+
+onMounted(() => {
+  getTagCategoryOptions()
+})
+
 </script>
 <style>
 #addPictureBatchView {
