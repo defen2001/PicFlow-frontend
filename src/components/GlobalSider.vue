@@ -19,8 +19,8 @@
 <script setup lang="ts">
 // 菜单列表
 import { PictureOutlined, TeamOutlined, UserOutlined } from '@ant-design/icons-vue'
-import { computed, h, ref, watchEffect } from 'vue'
-import { useRouter } from 'vue-router'
+import { computed, h, ref, watch, watchEffect } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import { useLoginUserStore } from '@/stores/useLoginUserStore.ts'
 import { SPACE_TYPE_ENUM } from '@/constans/space.ts'
 import { listMyTeamSpaceUsingPost } from '@/api/spaceUserController.ts'
@@ -104,5 +104,14 @@ const doMenuClick = ({ key }: { key: string }) => {
   // 需要带参数跳转， ({ path : key}) 不行
   router.push(key)
 }
+
+const route = useRoute()
+
+// 监听路由变化，当创建空间成功后路由跳转时重新加载
+watch(() => route.path, (newPath) => {
+  if (newPath.includes('/space/') && loginUserStore.loginUser.id) {
+    fetchTeamSpaceList()
+  }
+})
 </script>
 <style scoped></style>
