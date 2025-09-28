@@ -1,7 +1,7 @@
 <template>
   <div id="userRegisterView">
     <h2 class="title">用户注册</h2>
-    <div class="desc">云图库</div>
+    <div class="desc">星海图库</div>
     <a-form
       :model="formState"
       name="basic"

@@ -6,7 +6,7 @@
         <router-link to="/">
           <div class="logo-section">
             <img src="@/assets/logo.svg" alt="Logo" class="logo" />
-            <span class="site-name">网站名称</span>
+            <span class="site-name">星海图库</span>
           </div>
         </router-link>
       </a-col>
@@ -30,7 +30,7 @@
               <a-dropdown>
                 <ASpace>
                   <a-avatar :src="loginUserStore.loginUser.userAvatar" />
-                  {{ loginUserStore.loginUser.userName ?? '无名' }}
+                  {{ loginUserStore.loginUser.username ?? '无名' }}
                 </ASpace>
                 <template #overlay>
                   <a-menu>
@@ -134,7 +134,7 @@ const doLogout = async () => {
   console.log(res)
   if (res.data.code === 0) {
     loginUserStore.setLoginUser({
-      userName: '未登录',
+      username: '未登录',
     })
     message.success('退出登录成功')
     await router.push('/')

@@ -8,7 +8,7 @@ import { getLoginUserUsingGet } from '@/api/userController.ts'
 export const useLoginUserStore = defineStore('loginUser', () => {
   const loginUser = ref<API.LoginUserVO>({
     id: '',
-    userName: '未登录',
+    username: '未登录',
     userAvatar: '',
   })
 
